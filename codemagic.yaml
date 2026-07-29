@@ -31,29 +31,17 @@ workflows:
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO
 
-      - name: Create export options
+      - name: Extract App
         script: |
-          cat > $CM_BUILD_DIR/exportOptions.plist <<EOF
-          <?xml version="1.0" encoding="UTF-8"?>
-          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-          <plist version="1.0">
-          <dict>
-              <key>method</key>
-              <string>development</string>
-              <key>signingStyle</key>
-              <string>manual</string>
-          </dict>
-          </plist>
-          EOF
+          mkdir -p $CM_BUILD_DIR/Payload
 
-      - name: Export IPA
-        script: |
-          xcodebuild \
-            -exportArchive \
-            -archivePath $CM_BUILD_DIR/App.xcarchive \
-            -exportOptionsPlist $CM_BUILD_DIR/exportOptions.plist \
-            -exportPath $CM_BUILD_DIR
+          cp -R $CM_BUILD_DIR/App.xcarchive/Products/Applications/App.app \
+          $CM_BUILD_DIR/Payload/
+
+          cd $CM_BUILD_DIR
+
+          zip -r IRONVAULT-AI.zip Payload
 
     artifacts:
-      - $CM_BUILD_DIR/*.ipa
+      - $CM_BUILD_DIR/IRONVAULT-AI.zip
       - $CM_BUILD_DIR/*.xcarchive
