@@ -2,7 +2,7 @@ workflows:
   ios-workflow:
     name: IRONVAULT AI IPA Build
 
-    instance_type: mac_mini
+    instance_type: mac_mini_m2
 
     environment:
       xcode: latest
