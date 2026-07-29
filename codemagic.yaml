@@ -8,6 +8,7 @@ workflows:
       xcode: latest
 
     scripts:
+
       - name: Install dependencies
         script: |
           npm install
@@ -17,7 +18,7 @@ workflows:
           chmod -R 755 node_modules
           npx cap sync ios
 
-      - name: Build unsigned app
+      - name: Build Archive
         script: |
           cd ios/App
 
@@ -30,5 +31,15 @@ workflows:
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO
 
+      - name: Export IPA
+        script: |
+          xcodebuild \
+            -exportArchive \
+            -archivePath $CM_BUILD_DIR/App.xcarchive \
+            -exportOptionsPlist ios/App/exportOptions.plist \
+            -exportPath $CM_BUILD_DIR \
+            CODE_SIGNING_ALLOWED=NO
+
     artifacts:
+      - $CM_BUILD_DIR/*.ipa
       - $CM_BUILD_DIR/*.xcarchive
