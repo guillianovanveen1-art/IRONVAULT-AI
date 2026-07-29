@@ -1,43 +1,34 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="nl" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>IRONVAULT AI | Ultimate Mobile Gym Coach</title>
+    <title>IRONVAULT AI</title>
     <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://unpkg.com/lucide@latest" defer></script>
     <style>
-        /* ==========================================
-           1. CORE CSS SYSTEM & THEMES
-           ========================================== */
         :root {
-            --font-main: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            --safe-top: env(safe-area-inset-top, 20px);
-            --safe-bottom: env(safe-area-inset-bottom, 20px);
-            --transition-speed: 0.25s;
-            --radius-xl: 24px;
+            --bg-main: #08080A;
+            --card-bg: #121318;
+            --card-border: #222530;
+            --text-main: #FFFFFF;
+            --text-muted: #8E9BAE;
+            --accent-orange: #FF5500;
+            --accent-glow: rgba(255, 85, 0, 0.25);
+            --secondary-metal: #1A1D24;
+            --input-bg: #0D0F12;
+            --nav-bg: rgba(13, 15, 18, 0.96);
+            --success: #10B981;
+            --danger: #EF4444;
             --radius-lg: 16px;
             --radius-md: 12px;
             --radius-sm: 8px;
+            
+            /* Safe Areas voor iOS / Capacitor Notch & Home Bar */
+            --sat: env(safe-area-inset-top, 0px);
+            --sab: env(safe-area-inset-bottom, 0px);
         }
 
-        /* THEME 1: DARK LUXURY (DEFAULT) */
-        [data-theme="dark"] {
-            --bg-main: #05070A;
-            --card-bg: #10151D;
-            --card-border: #1C2432;
-            --text-main: #FFFFFF;
-            --text-muted: #8E9BAE;
-            --accent-orange: #FF6B00;
-            --accent-glow: rgba(255, 107, 0, 0.25);
-            --secondary-metal: #1F2733;
-            --input-bg: #0B0E14;
-            --nav-bg: rgba(10, 14, 21, 0.92);
-            --success: #34D399;
-            --danger: #EF4444;
-        }
-
-        /* THEME 2: WHITE CLEAN PREMIUM */
         [data-theme="light"] {
             --bg-main: #F4F6F9;
             --card-bg: #FFFFFF;
@@ -45,28 +36,10 @@
             --text-main: #0F172A;
             --text-muted: #64748B;
             --accent-orange: #FF5500;
-            --accent-glow: rgba(255, 85, 0, 0.2);
+            --accent-glow: rgba(255, 85, 0, 0.15);
             --secondary-metal: #E2E8F0;
             --input-bg: #F8FAFC;
-            --nav-bg: rgba(255, 255, 255, 0.92);
-            --success: #10B981;
-            --danger: #DC2626;
-        }
-
-        /* THEME 3: ORANGE PREMIUM (IRONVAULT SIGNATURE) */
-        [data-theme="orange"] {
-            --bg-main: #000000;
-            --card-bg: #120A04;
-            --card-border: #2A170A;
-            --text-main: #FFFFFF;
-            --text-muted: #A3826C;
-            --accent-orange: #FF6200;
-            --accent-glow: rgba(255, 98, 0, 0.4);
-            --secondary-metal: #231206;
-            --input-bg: #0A0502;
-            --nav-bg: rgba(18, 10, 4, 0.94);
-            --success: #10B981;
-            --danger: #EF4444;
+            --nav-bg: rgba(255, 255, 255, 0.96);
         }
 
         * {
@@ -75,61 +48,76 @@
             padding: 0;
             -webkit-tap-highlight-color: transparent;
             user-select: none;
+            -webkit-user-select: none;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
 
         body, html {
             width: 100%;
             height: 100%;
-            background-color: #000000;
-            font-family: var(--font-main);
+            background-color: #08080A;
             color: var(--text-main);
             overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
         }
 
-        /* App Viewport Container (iPhone frame on Desktop) */
         #app-container {
             width: 100%;
-            max-width: 430px;
             height: 100%;
-            max-height: 932px;
             background-color: var(--bg-main);
             position: relative;
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
+            padding-top: var(--sat);
         }
 
-        @media (min-width: 431px) {
-            #app-container {
-                height: 94vh;
-                border-radius: 44px;
-                border: 8px solid #1E2530;
-                box-shadow: 0 25px 60px rgba(0,0,0,0.8);
-            }
+        .screen {
+            position: absolute;
+            top: var(--sat);
+            left: 0;
+            width: 100%;
+            height: calc(100% - var(--sat));
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            padding: 20px 18px 100px 18px;
+            display: none;
+            opacity: 0;
+            box-sizing: border-box;
         }
 
-        /* Common UI Elements */
+        .screen.active {
+            display: block;
+            opacity: 1;
+        }
+
+        .screen::-webkit-scrollbar { display: none; }
+
+        .screen-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            margin-top: 10px;
+        }
+
+        .screen-header h2 {
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
         .card {
             background: var(--card-bg);
             border: 1px solid var(--card-border);
             border-radius: var(--radius-lg);
             padding: 16px;
             margin-bottom: 14px;
-            transition: all 0.2s ease;
             position: relative;
         }
 
-        .card:active {
-            transform: scale(0.985);
-        }
-
         .accent-glow {
-            box-shadow: 0 0 20px var(--accent-glow);
-            border-color: var(--accent-orange) !important;
+            box-shadow: 0 0 15px var(--accent-glow);
+            border-color: var(--accent-orange);
         }
 
         .btn-orange {
@@ -139,19 +127,18 @@
             border: none;
             border-radius: var(--radius-md);
             padding: 14px 20px;
-            font-size: 15px;
+            font-size: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
             cursor: pointer;
             width: 100%;
-            box-shadow: 0 4px 18px var(--accent-glow);
-            transition: all 0.2s ease;
+            box-shadow: 0 4px 15px var(--accent-glow);
         }
 
         .btn-orange:active {
-            transform: scale(0.96);
+            transform: scale(0.98);
             opacity: 0.9;
         }
 
@@ -161,7 +148,7 @@
             font-weight: 600;
             border: 1px solid var(--card-border);
             border-radius: var(--radius-md);
-            padding: 10px 16px;
+            padding: 10px 14px;
             font-size: 13px;
             cursor: pointer;
             display: inline-flex;
@@ -175,85 +162,34 @@
             background: var(--input-bg);
             border: 1px solid var(--card-border);
             border-radius: var(--radius-md);
-            padding: 14px 16px;
+            padding: 12px 14px;
             color: var(--text-main);
             font-size: 14px;
             outline: none;
             margin-bottom: 12px;
-            transition: border-color 0.2s ease;
+            -webkit-appearance: none;
         }
 
         .input-field:focus {
             border-color: var(--accent-orange);
         }
 
-        /* Screen Wrapper */
-        #screens-wrapper {
-            flex: 1;
-            position: relative;
-            overflow: hidden;
-            width: 100%;
-        }
-
-        .screen {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            overflow-y: auto;
-            padding: calc(var(--safe-top) + 16px) 18px calc(var(--safe-bottom) + 80px) 18px;
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(12px);
-            transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s;
-        }
-
-        .screen::-webkit-scrollbar { display: none; }
-
-        .screen.active {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0);
-        }
-
-        /* Screen Header */
-        .screen-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .screen-header h2 {
-            font-size: 24px;
-            font-weight: 800;
-            letter-spacing: -0.5px;
-        }
-
-        .screen-header p {
-            font-size: 12px;
-            color: var(--text-muted);
-            margin-top: 2px;
-        }
-
-        /* Navigation Bar */
         #bottom-nav {
             position: absolute;
             bottom: 0;
             left: 0;
             width: 100%;
-            height: calc(var(--safe-bottom) + 60px);
+            height: calc(65px + var(--sab));
+            padding-bottom: var(--sab);
             background: var(--nav-bg);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
             border-top: 1px solid var(--card-border);
             display: flex;
             justify-content: space-around;
-            align-items: flex-start;
-            padding-top: 10px;
+            align-items: center;
             z-index: 100;
-            transition: background var(--transition-speed);
+            box-sizing: border-box;
         }
 
         .nav-item {
@@ -262,136 +198,59 @@
             align-items: center;
             gap: 4px;
             color: var(--text-muted);
-            text-decoration: none;
             font-size: 10px;
             font-weight: 700;
             cursor: pointer;
-            width: 20%;
-            transition: color 0.2s ease, transform 0.2s ease;
+            width: 16%;
         }
 
         .nav-item.active {
             color: var(--accent-orange);
         }
 
-        .nav-item.active i {
-            transform: translateY(-2px);
-        }
-
-        /* AUTH & ONBOARDING OVERLAYS */
-        .fullscreen-overlay {
-            position: absolute;
-            inset: 0;
-            background: var(--bg-main);
-            z-index: 5000;
-            display: flex;
-            flex-direction: column;
-            padding: calc(var(--safe-top) + 20px) 24px calc(var(--safe-bottom) + 20px) 24px;
-            overflow-y: auto;
-            transition: opacity 0.3s ease, visibility 0.3s ease;
-        }
-
-        .fullscreen-overlay.hidden {
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
-        }
-
-        /* MODAL SHEETS */
         .modal-overlay {
             position: absolute;
             inset: 0;
-            background: rgba(0,0,0,0.75);
-            backdrop-filter: blur(8px);
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
             z-index: 2000;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.25s ease;
-            display: flex;
+            display: none;
             align-items: flex-end;
         }
 
         .modal-overlay.active {
-            opacity: 1;
-            visibility: visible;
+            display: flex;
         }
 
         .modal-sheet {
             width: 100%;
-            max-height: 88%;
+            max-height: 85%;
             background: var(--card-bg);
             border-top: 1px solid var(--card-border);
-            border-radius: var(--radius-xl) var(--radius-xl) 0 0;
-            padding: 20px 20px calc(var(--safe-bottom) + 20px) 20px;
+            border-radius: 24px 24px 0 0;
+            padding: 20px 20px calc(20px + var(--sab)) 20px;
             overflow-y: auto;
-            transform: translateY(100%);
-            transition: transform 0.3s cubic-bezier(0.1, 0.9, 0.2, 1);
+            -webkit-overflow-scrolling: touch;
         }
 
-        .modal-overlay.active .modal-sheet {
-            transform: translateY(0);
-        }
-
-        /* REST TIMER FLOAT */
-        #rest-timer-bar {
-            position: absolute;
-            top: calc(var(--safe-top) + 10px);
-            left: 18px;
-            right: 18px;
-            background: var(--card-bg);
-            border: 1px solid var(--accent-orange);
-            border-radius: var(--radius-md);
-            padding: 10px 16px;
-            display: none;
-            justify-content: space-between;
+        .set-row {
+            display: flex;
             align-items: center;
-            z-index: 1000;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-        }
-
-        /* Empty State Graphic Container */
-        .empty-state {
-            text-align: center;
-            padding: 32px 16px;
-            color: var(--text-muted);
-        }
-
-        .empty-state i {
-            margin-bottom: 12px;
-            opacity: 0.5;
-        }
-
-        /* Toggle Switch UI */
-        .toggle-switch {
-            position: relative;
-            width: 44px;
-            height: 24px;
-            appearance: none;
+            justify-content: space-between;
             background: var(--secondary-metal);
-            outline: none;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: background 0.2s;
+            padding: 8px 12px;
+            border-radius: var(--radius-sm);
+            margin-bottom: 6px;
         }
 
-        .toggle-switch:checked {
-            background: var(--accent-orange);
-        }
-
-        .toggle-switch::before {
-            content: '';
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            top: 2px;
-            left: 2px;
-            background: #FFF;
-            transition: transform 0.2s;
-        }
-
-        .toggle-switch:checked::before {
-            transform: translateX(20px);
+        .badge {
+            font-size: 10px;
+            padding: 3px 8px;
+            border-radius: 4px;
+            background: var(--secondary-metal);
+            color: var(--text-muted);
+            font-weight: 700;
         }
     </style>
 </head>
@@ -399,1135 +258,690 @@
 
     <div id="app-container">
 
-        <!-- ==========================================
-             REST TIMER OVERLAY
-             ========================================== -->
-        <div id="rest-timer-bar">
-            <div style="display: flex; align-items: center; gap: 8px;">
-                <i data-lucide="timer" style="color: var(--accent-orange); width: 18px;"></i>
-                <span style="font-size: 12px; font-weight: 700; letter-spacing: 0.5px;">REST TIMER</span>
-            </div>
-            <div style="display: flex; align-items: center; gap: 12px;">
-                <span id="rest-timer-display" style="font-size: 16px; font-weight: 900; color: var(--accent-orange);">01:30</span>
-                <button onclick="stopRestTimer()" style="background:none; border:none; color:var(--text-muted); cursor:pointer;">
-                    <i data-lucide="x" style="width: 16px;"></i>
-                </button>
-            </div>
-        </div>
-
-        <!-- ==========================================
-             1. AUTHENTICATION OVERLAY
-             ========================================== -->
-        <div id="auth-overlay" class="fullscreen-overlay">
-            <div style="text-align: center; margin-top: 40px; margin-bottom: 30px;">
-                <div style="width: 60px; height: 60px; border-radius: 18px; background: var(--accent-orange); display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 0 25px var(--accent-glow);">
-                    <i data-lucide="shield" style="color: #FFF; width: 32px; height: 32px;"></i>
+        <!-- SCREEN: HOME -->
+        <div class="screen active" id="screen-home">
+            <div class="screen-header">
+                <div>
+                    <h2 id="home-greeting">Welkom terug</h2>
+                    <p style="font-size: 12px; color: var(--text-muted);">IRONVAULT AI Performance</p>
                 </div>
-                <h1 style="font-size: 28px; font-weight: 900; margin-top: 14px; letter-spacing: -0.5px;">IRONVAULT AI</h1>
-                <p style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">Precision Athletic Intelligence</p>
-            </div>
-
-            <!-- LOGIN FORM -->
-            <div id="login-form-container">
-                <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 16px;">Sign In</h3>
-                <input type="email" id="login-email" class="input-field" placeholder="Email Address">
-                <input type="password" id="login-password" class="input-field" placeholder="Password">
-                <button class="btn-orange" onclick="handleLogin()" style="margin-top: 8px;">
-                    Sign In <i data-lucide="arrow-right" style="width: 18px;"></i>
-                </button>
-                <div style="text-align: center; margin-top: 20px;">
-                    <span style="font-size: 13px; color: var(--text-muted);">New to IRONVAULT? </span>
-                    <a href="#" onclick="toggleAuthMode('register')" style="font-size: 13px; color: var(--accent-orange); font-weight: 700; text-decoration: none;">Create Account</a>
+                <div style="width: 36px; height: 36px; border-radius: 50%; background: var(--accent-orange); display: flex; align-items: center; justify-content: center; font-weight: 800; color: #FFF;" id="avatar-icon">
+                    A
                 </div>
             </div>
 
-            <!-- REGISTER FORM -->
-            <div id="register-form-container" style="display: none;">
-                <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 16px;">Create Vault Account</h3>
-                <input type="text" id="reg-name" class="input-field" placeholder="Full Name">
-                <input type="email" id="reg-email" class="input-field" placeholder="Email Address">
-                <input type="password" id="reg-password" class="input-field" placeholder="Password">
-                <input type="password" id="reg-confirm" class="input-field" placeholder="Confirm Password">
-                <button class="btn-orange" onclick="handleRegister()" style="margin-top: 8px;">
-                    Initialize Profile <i data-lucide="user-plus" style="width: 18px;"></i>
+            <!-- MAIN STATS GRID -->
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 14px;">
+                <div class="card" style="padding: 12px;">
+                    <span class="badge">STREAK</span>
+                    <div style="font-size: 22px; font-weight: 900; margin-top: 6px;" id="stat-streak">0 dagen</div>
+                </div>
+                <div class="card" style="padding: 12px;">
+                    <span class="badge">WORKOUTS</span>
+                    <div style="font-size: 22px; font-weight: 900; margin-top: 6px;" id="stat-workouts">0</div>
+                </div>
+                <div class="card" style="padding: 12px;">
+                    <span class="badge">GEWICHT</span>
+                    <div style="font-size: 22px; font-weight: 900; margin-top: 6px;" id="stat-weight">0 kg</div>
+                </div>
+                <div class="card" style="padding: 12px;">
+                    <span class="badge">CALORIEËN VANDAAG</span>
+                    <div style="font-size: 22px; font-weight: 900; margin-top: 6px;" id="stat-calories">0 kcal</div>
+                </div>
+            </div>
+
+            <!-- QUICK START WORKOUT -->
+            <div class="card accent-glow" style="margin-bottom: 14px;">
+                <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 4px;">Klaar voor je training?</h3>
+                <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 14px;">Kies een schema en start direct met loggen.</p>
+                <button class="btn-orange" id="btn-quick-workout">
+                    <i data-lucide="play"></i> Snelle Start Workout
                 </button>
-                <div style="text-align: center; margin-top: 20px;">
-                    <span style="font-size: 13px; color: var(--text-muted);">Already have an account? </span>
-                    <a href="#" onclick="toggleAuthMode('login')" style="font-size: 13px; color: var(--accent-orange); font-weight: 700; text-decoration: none;">Sign In</a>
+            </div>
+
+            <!-- AI DIRECTIVE -->
+            <div class="card" style="display: flex; gap: 12px; align-items: flex-start;">
+                <i data-lucide="bot" style="color: var(--accent-orange); flex-shrink: 0; margin-top: 2px;"></i>
+                <div>
+                    <div style="font-size: 11px; font-weight: 800; color: var(--accent-orange);">IRON AI TIP</div>
+                    <div style="font-size: 12px; margin-top: 2px; line-height: 1.4;" id="home-ai-tip">
+                        Consistentie is de sleutel. Log vandaag je maaltijden en training voor optimale progressie.
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- ==========================================
-             2. ONBOARDING OVERLAY
-             ========================================== -->
-        <div id="onboarding-overlay" class="fullscreen-overlay hidden">
-            <div style="margin-top: 20px; margin-bottom: 24px;">
-                <span style="font-size: 11px; font-weight: 800; color: var(--accent-orange); letter-spacing: 1.5px;">INITIAL CALIBRATION</span>
-                <h2 style="font-size: 26px; font-weight: 900; margin-top: 4px;" id="onboard-step-title">Personal Metrics</h2>
+        <!-- SCREEN: WORKOUT -->
+        <div class="screen" id="screen-workout">
+            <div class="screen-header">
+                <div>
+                    <h2>Workout Tracker</h2>
+                    <p style="font-size: 12px; color: var(--text-muted);">Selecteer een schema</p>
+                </div>
             </div>
 
-            <div id="onboard-step-1">
-                <label style="font-size: 12px; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 6px;">Age</label>
-                <input type="number" id="onboard-age" class="input-field" placeholder="25" value="25">
-                
-                <label style="font-size: 12px; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 6px;">Height (cm)</label>
-                <input type="number" id="onboard-height" class="input-field" placeholder="180" value="180">
-
-                <label style="font-size: 12px; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 6px;">Current Weight (kg)</label>
-                <input type="number" id="onboard-weight" class="input-field" placeholder="75" value="75">
-
-                <button class="btn-orange" onclick="nextOnboardingStep(2)" style="margin-top: 16px;">
-                    Next Step <i data-lucide="chevron-right" style="width: 18px;"></i>
-                </button>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px;">
+                <div class="card routine-btn" style="cursor: pointer;" data-routine="Push">
+                    <i data-lucide="zap" style="color: var(--accent-orange); margin-bottom: 6px;"></i>
+                    <div style="font-weight: 800; font-size: 15px;">Push</div>
+                    <div style="font-size: 11px; color: var(--text-muted);">Borst, Schouders, Triceps</div>
+                </div>
+                <div class="card routine-btn" style="cursor: pointer;" data-routine="Pull">
+                    <i data-lucide="align-justify" style="color: var(--accent-orange); margin-bottom: 6px;"></i>
+                    <div style="font-weight: 800; font-size: 15px;">Pull</div>
+                    <div style="font-size: 11px; color: var(--text-muted);">Rug, Biceps</div>
+                </div>
+                <div class="card routine-btn" style="cursor: pointer;" data-routine="Upper">
+                    <i data-lucide="shield" style="color: var(--accent-orange); margin-bottom: 6px;"></i>
+                    <div style="font-weight: 800; font-size: 15px;">Upper Body</div>
+                    <div style="font-size: 11px; color: var(--text-muted);">Bovenlichaam Kracht</div>
+                </div>
+                <div class="card routine-btn" style="cursor: pointer;" data-routine="Full Body">
+                    <i data-lucide="activity" style="color: var(--accent-orange); margin-bottom: 6px;"></i>
+                    <div style="font-weight: 800; font-size: 15px;">Full Body</div>
+                    <div style="font-size: 11px; color: var(--text-muted);">Volledig Lichaam</div>
+                </div>
             </div>
 
-            <div id="onboard-step-2" style="display: none;">
-                <label style="font-size: 12px; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 8px;">Primary Goal</label>
-                <select id="onboard-goal" class="input-field">
-                    <option value="Build Muscle">Build Muscle (Hypertrophy)</option>
-                    <option value="Lose Fat">Lose Fat (Caloric Deficit)</option>
-                    <option value="Maintain Fitness">Maintain & Recomp</option>
-                </select>
-
-                <label style="font-size: 12px; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 8px;">Training Experience</label>
-                <select id="onboard-experience" class="input-field">
-                    <option value="Beginner">Beginner (&lt; 1 Year)</option>
-                    <option value="Intermediate" selected>Intermediate (1-3 Years)</option>
-                    <option value="Advanced">Advanced (3+ Years)</option>
-                </select>
-
-                <label style="font-size: 12px; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 8px;">Weekly Training Target</label>
-                <select id="onboard-days" class="input-field">
-                    <option value="3">3 Days / Week</option>
-                    <option value="4" selected>4 Days / Week</option>
-                    <option value="5">5 Days / Week</option>
-                    <option value="6">6 Days / Week</option>
-                </select>
-
-                <button class="btn-orange" onclick="finishOnboarding()" style="margin-top: 16px;">
-                    Complete Setup <i data-lucide="check" style="width: 18px;"></i>
-                </button>
-            </div>
+            <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 12px;">Workout Historie</h3>
+            <div id="workout-history-list"></div>
         </div>
 
-        <!-- ==========================================
-             3. MAIN SCREENS WRAPPER
-             ========================================== -->
-        <div id="screens-wrapper">
+        <!-- SCREEN: NUTRITION -->
+        <div class="screen" id="screen-nutrition">
+            <div class="screen-header">
+                <div>
+                    <h2>Voeding Tracker</h2>
+                    <p style="font-size: 12px; color: var(--text-muted);">Macro's & Calorieën</p>
+                </div>
+                <button class="btn-secondary" id="btn-open-meal-modal">
+                    <i data-lucide="plus" style="width: 14px;"></i> Maaltijd
+                </button>
+            </div>
 
-            <!-- HOME SCREEN -->
-            <div class="screen active" id="screen-home">
-                <div class="screen-header">
+            <div class="card" style="padding: 16px; margin-bottom: 16px;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 12px;">
                     <div>
-                        <h2 id="home-user-greeting">Welcome 👋</h2>
-                        <p id="home-user-sub">IRONVAULT AI Assistant Ready</p>
-                    </div>
-                    <div style="width: 40px; height: 40px; border-radius: 50%; background: var(--secondary-metal); border: 1px solid var(--accent-orange); display: flex; align-items: center; justify-content: center;" onclick="switchTab('profile', document.querySelectorAll('.nav-item')[4])">
-                        <i data-lucide="user" style="width: 20px; color: var(--text-main);"></i>
+                        <span style="font-size: 11px; font-weight: 800; color: var(--text-muted);">CALORIEËN TOTAAL</span>
+                        <div style="font-size: 24px; font-weight: 900;" id="nutr-total-cal">0 / 2500 kcal</div>
                     </div>
                 </div>
 
-                <!-- STREAK & STATS BAR -->
-                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px;">
-                    <div class="card" style="padding: 12px; text-align: center;">
-                        <i data-lucide="flame" style="color: var(--accent-orange); width: 20px; margin-bottom: 4px;"></i>
-                        <div style="font-size: 18px; font-weight: 900;" id="stat-home-streak">0</div>
-                        <div style="font-size: 10px; color: var(--text-muted); font-weight: 700;">DAY STREAK</div>
-                    </div>
-                    <div class="card" style="padding: 12px; text-align: center;">
-                        <i data-lucide="dumbbell" style="color: var(--accent-orange); width: 20px; margin-bottom: 4px;"></i>
-                        <div style="font-size: 18px; font-weight: 900;" id="stat-home-workouts">0</div>
-                        <div style="font-size: 10px; color: var(--text-muted); font-weight: 700;">WORKOUTS</div>
-                    </div>
-                    <div class="card" style="padding: 12px; text-align: center;">
-                        <i data-lucide="award" style="color: var(--accent-orange); width: 20px; margin-bottom: 4px;"></i>
-                        <div style="font-size: 18px; font-weight: 900;" id="stat-home-volume">0kg</div>
-                        <div style="font-size: 10px; color: var(--text-muted); font-weight: 700;">LIFTED</div>
-                    </div>
-                </div>
-
-                <!-- TODAY'S MISSION CARD -->
-                <div class="card accent-glow" style="padding: 18px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                        <span style="font-size: 11px; font-weight: 800; color: var(--accent-orange); letter-spacing: 1px;">TODAY'S WORKOUT MISSION</span>
-                        <span style="font-size: 10px; background: var(--secondary-metal); padding: 4px 8px; border-radius: 4px; font-weight: 700;">READY</span>
-                    </div>
-                    <h3 style="font-size: 20px; font-weight: 900; margin-bottom: 4px;" id="home-recommended-title">Push Hypertrophy</h3>
-                    <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Chest, Heavy Shoulders & Triceps focus</p>
-
-                    <button class="btn-orange" onclick="startWorkoutRoutine('Push Hypertrophy')">
-                        <i data-lucide="play" style="fill: #FFF; width: 16px;"></i> START WORKOUT
-                    </button>
-                </div>
-
-                <!-- IRON AI DIRECTIVE -->
-                <div class="card" style="display: flex; align-items: flex-start; gap: 12px; background: var(--card-bg);">
-                    <div style="width: 36px; height: 36px; border-radius: 50%; background: var(--accent-glow); display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px;">
-                        <i data-lucide="bot" style="color: var(--accent-orange); width: 20px;"></i>
+                <div style="display: flex; flex-direction: column; gap: 8px;">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; font-size: 11px; font-weight: 700; margin-bottom: 2px;">
+                            <span>Eiwitten</span>
+                            <span id="nutr-pro-text">0g / 180g</span>
+                        </div>
+                        <div style="height: 6px; background: var(--secondary-metal); border-radius: 3px; overflow: hidden;">
+                            <div id="bar-pro" style="width: 0%; height: 100%; background: var(--accent-orange);"></div>
+                        </div>
                     </div>
                     <div>
-                        <div style="font-size: 11px; font-weight: 800; color: var(--accent-orange);">IRON AI DAILY DIRECTIVE</div>
-                        <p style="font-size: 12px; color: var(--text-main); margin-top: 4px; line-height: 1.4;" id="home-ai-directive">
-                            "Account initialized. Log your first workout session today to calibrate baseline volume recommendations."
-                        </p>
+                        <div style="display: flex; justify-content: space-between; font-size: 11px; font-weight: 700; margin-bottom: 2px;">
+                            <span>Koolhydraten</span>
+                            <span id="nutr-carb-text">0g / 250g</span>
+                        </div>
+                        <div style="height: 6px; background: var(--secondary-metal); border-radius: 3px; overflow: hidden;">
+                            <div id="bar-carb" style="width: 0%; height: 100%; background: #3B82F6;"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div style="display: flex; justify-content: space-between; font-size: 11px; font-weight: 700; margin-bottom: 2px;">
+                            <span>Vetten</span>
+                            <span id="nutr-fat-text">0g / 70g</span>
+                        </div>
+                        <div style="height: 6px; background: var(--secondary-metal); border-radius: 3px; overflow: hidden;">
+                            <div id="bar-fat" style="width: 0%; height: 100%; background: var(--success);"></div>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- WORKOUT SCREEN -->
-            <div class="screen" id="screen-workout">
-                <div class="screen-header">
-                    <div>
-                        <h2>Workout System</h2>
-                        <p>Track, execute & break PRs</p>
-                    </div>
-                    <button class="btn-secondary" onclick="openModal('custom-routine-modal')">
-                        <i data-lucide="plus" style="width: 14px;"></i> Custom
-                    </button>
-                </div>
+            <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 12px;">Gelogde Maaltijden</h3>
+            <div id="meal-log-list"></div>
+        </div>
 
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px;">
-                    <div class="card" style="cursor: pointer;" onclick="startWorkoutRoutine('Push Day')">
-                        <i data-lucide="zap" style="color: var(--accent-orange); margin-bottom: 8px;"></i>
-                        <div style="font-weight: 800; font-size: 15px;">Push Day</div>
-                        <div style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">Chest, Shoulders, Tri</div>
-                    </div>
-                    <div class="card" style="cursor: pointer;" onclick="startWorkoutRoutine('Pull Day')">
-                        <i data-lucide="align-justify" style="color: var(--accent-orange); margin-bottom: 8px;"></i>
-                        <div style="font-weight: 800; font-size: 15px;">Pull Day</div>
-                        <div style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">Back, Rear Delts, Biceps</div>
-                    </div>
-                    <div class="card" style="cursor: pointer;" onclick="startWorkoutRoutine('Legs Focus')">
-                        <i data-lucide="activity" style="color: var(--accent-orange); margin-bottom: 8px;"></i>
-                        <div style="font-weight: 800; font-size: 15px;">Legs Focus</div>
-                        <div style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">Quads, Hams, Calves</div>
-                    </div>
-                    <div class="card" style="cursor: pointer;" onclick="startWorkoutRoutine('Upper Power')">
-                        <i data-lucide="shield" style="color: var(--accent-orange); margin-bottom: 8px;"></i>
-                        <div style="font-weight: 800; font-size: 15px;">Upper Power</div>
-                        <div style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">Upper Body Strength</div>
-                    </div>
-                </div>
-
-                <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 12px;">Logged Sessions</h3>
-                <div id="workout-history-list">
-                    <!-- Populated dynamically or empty state -->
+        <!-- SCREEN: AI COACH -->
+        <div class="screen" id="screen-coach">
+            <div class="screen-header">
+                <div>
+                    <h2>IRON AI Coach</h2>
+                    <p style="font-size: 12px; color: var(--text-muted);">Offline Fitness Assistent</p>
                 </div>
             </div>
 
-            <!-- NUTRITION SCREEN -->
-            <div class="screen" id="screen-nutrition">
-                <div class="screen-header">
-                    <div>
-                        <h2>Nutrition Tracker</h2>
-                        <p>Fuel & Macro Balance</p>
-                    </div>
-                    <button class="btn-secondary" onclick="openModal('add-meal-modal')">
-                        <i data-lucide="plus" style="width: 14px;"></i> Log Meal
-                    </button>
-                </div>
+            <div style="display: flex; flex-direction: column; height: calc(100% - 70px);">
+                <div id="chat-thread" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; margin-bottom: 12px; padding-bottom: 10px; -webkit-overflow-scrolling: touch;"></div>
 
-                <!-- MACRO DASHBOARD CARD -->
-                <div class="card" style="padding: 18px; margin-bottom: 16px;">
-                    <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 14px;">
-                        <div>
-                            <span style="font-size: 11px; font-weight: 800; color: var(--text-muted);">CALORIC INTAKE</span>
-                            <div style="font-size: 26px; font-weight: 900; margin-top: 2px;">
-                                <span id="nutr-current-cal">0</span> 
-                                <span style="font-size: 14px; font-weight: 600; color: var(--text-muted);">/ 2,400 kcal</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Macro Bars -->
-                    <div style="display: flex; flex-direction: column; gap: 10px;">
-                        <div>
-                            <div style="display: flex; justify-content: space-between; font-size: 11px; font-weight: 700; margin-bottom: 4px;">
-                                <span>Protein</span>
-                                <span id="nutr-protein-text">0g / 180g</span>
-                            </div>
-                            <div style="height: 6px; background: var(--secondary-metal); border-radius: 3px; overflow: hidden;">
-                                <div id="bar-protein" style="width: 0%; height: 100%; background: var(--accent-orange); transition: width 0.3s;"></div>
-                            </div>
-                        </div>
-                        <div>
-                            <div style="display: flex; justify-content: space-between; font-size: 11px; font-weight: 700; margin-bottom: 4px;">
-                                <span>Carbs</span>
-                                <span id="nutr-carbs-text">0g / 250g</span>
-                            </div>
-                            <div style="height: 6px; background: var(--secondary-metal); border-radius: 3px; overflow: hidden;">
-                                <div id="bar-carbs" style="width: 0%; height: 100%; background: #3B82F6; transition: width 0.3s;"></div>
-                            </div>
-                        </div>
-                        <div>
-                            <div style="display: flex; justify-content: space-between; font-size: 11px; font-weight: 700; margin-bottom: 4px;">
-                                <span>Fats</span>
-                                <span id="nutr-fats-text">0g / 65g</span>
-                            </div>
-                            <div style="height: 6px; background: var(--secondary-metal); border-radius: 3px; overflow: hidden;">
-                                <div id="bar-fats" style="width: 0%; height: 100%; background: var(--success); transition: width 0.3s;"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 12px;">Daily Meal Log</h3>
-                <div id="meal-log-list">
-                    <!-- Dynamic Meals -->
-                </div>
-            </div>
-
-            <!-- AI COACH SCREEN -->
-            <div class="screen" id="screen-coach" style="display: flex; flex-direction: column;">
-                <div class="screen-header" style="margin-bottom: 10px;">
-                    <div>
-                        <h2>IRON AI Coach</h2>
-                        <p id="ai-status-indicator">Connected (Built-In Engine)</p>
-                    </div>
-                    <button class="btn-secondary" onclick="clearAiChat()" style="padding: 6px 10px; font-size: 11px;">Clear</button>
-                </div>
-
-                <!-- CHAT THREAD -->
-                <div id="chat-thread" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; padding-right: 4px; margin-bottom: 12px;">
-                    <!-- Dynamically Injected -->
-                </div>
-
-                <!-- CHAT INPUT -->
-                <div style="display: flex; gap: 8px; align-items: center; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 20px; padding: 6px 12px;">
-                    <input type="text" id="chat-input" placeholder="Ask IRON AI about workout/nutrition..." style="flex: 1; background: none; border: none; color: var(--text-main); font-size: 13px; outline: none;" onkeypress="if(event.key==='Enter') sendChatMessage()">
-                    <button onclick="sendChatMessage()" style="background: var(--accent-orange); border: none; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0;">
+                <div style="display: flex; gap: 8px; align-items: center; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 6px 10px;">
+                    <input type="text" id="chat-input" placeholder="Stel een vraag (bv. borst workout)..." style="flex: 1; background: none; border: none; color: var(--text-main); font-size: 13px; outline: none;">
+                    <button id="btn-send-chat" style="background: var(--accent-orange); border: none; width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer;">
                         <i data-lucide="arrow-up" style="color: #FFF; width: 16px;"></i>
                     </button>
                 </div>
             </div>
+        </div>
 
-            <!-- PROFILE SCREEN -->
-            <div class="screen" id="screen-profile">
-                <div class="screen-header">
-                    <div>
-                        <h2>User Vault</h2>
-                        <p>Performance & Data Hub</p>
-                    </div>
-                    <i data-lucide="settings" style="cursor: pointer; color: var(--text-muted);" onclick="openModal('settings-modal')"></i>
-                </div>
-
-                <div class="card" style="display: flex; align-items: center; gap: 14px; margin-bottom: 16px;">
-                    <div style="width: 52px; height: 52px; border-radius: 50%; background: var(--secondary-metal); border: 2px solid var(--accent-orange); display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 900;" id="profile-avatar">
-                        U
-                    </div>
-                    <div>
-                        <div style="font-weight: 800; font-size: 17px;" id="profile-name">User Name</div>
-                        <div style="font-size: 12px; color: var(--accent-orange); font-weight: 700;" id="profile-goal-badge">Goal: Hypertrophy</div>
-                        <div style="font-size: 11px; color: var(--text-muted); margin-top: 2px;" id="profile-stats-summary">0 kg • 0 cm • Beginner</div>
-                    </div>
-                </div>
-
-                <!-- WEIGHT HISTORY CHART CARD -->
-                <div class="card" style="padding: 16px; margin-bottom: 16px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                        <span style="font-size: 12px; font-weight: 800; color: var(--text-muted);">WEIGHT LOG TREND</span>
-                        <button class="btn-secondary" onclick="openModal('add-weight-modal')" style="padding: 4px 8px; font-size: 11px;">+ Add Log</button>
-                    </div>
-                    <canvas id="weightChart" width="340" height="130" style="width: 100%; height: 130px;"></canvas>
-                </div>
-
-                <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 12px;">Unlocked Badges</h3>
-                <div id="badge-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;">
-                    <!-- Dynamic Badges -->
+        <!-- SCREEN: PROFILE -->
+        <div class="screen" id="screen-profile">
+            <div class="screen-header">
+                <div>
+                    <h2>Profiel & Progressie</h2>
+                    <p style="font-size: 12px; color: var(--text-muted);">Persoonlijke gegevens</p>
                 </div>
             </div>
 
-        </div> <!-- END SCREENS WRAPPER -->
-
-        <!-- ==========================================
-             MODALS
-             ========================================== -->
-
-        <!-- SETTINGS MODAL (25+ FUNCTIONAL OPTIONS) -->
-        <div class="modal-overlay" id="settings-modal">
-            <div class="modal-sheet">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px;">
-                    <h3 style="font-size: 20px; font-weight: 800;">Settings & Controls</h3>
-                    <i data-lucide="x" style="cursor: pointer;" onclick="closeModal('settings-modal')"></i>
+            <div class="card" style="margin-bottom: 14px;">
+                <div style="font-size: 12px; font-weight: 800; color: var(--text-muted); margin-bottom: 10px;">GEBRUIKERSDETAILS</div>
+                <input type="text" id="prof-name" class="input-field" placeholder="Naam">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                    <input type="number" id="prof-age" class="input-field" placeholder="Leeftijd">
+                    <input type="number" id="prof-height" class="input-field" placeholder="Lengte (cm)">
                 </div>
-
-                <div style="display: flex; flex-direction: column; gap: 14px;">
-                    <!-- Theme Selector -->
-                    <div>
-                        <label style="font-size: 12px; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 6px;">1. Application Theme</label>
-                        <select class="input-field" id="setting-theme" onchange="setTheme(this.value)">
-                            <option value="dark">Dark Luxury (Default)</option>
-                            <option value="light">White Clean Premium</option>
-                            <option value="orange">Orange Premium Glow</option>
-                        </select>
-                    </div>
-
-                    <!-- AI API KEY -->
-                    <div class="card" style="padding: 12px; margin-bottom: 0;">
-                        <span style="font-size: 12px; font-weight: 800; color: var(--accent-orange); display: block; margin-bottom: 6px;">AI API KEY INTEGRATION</span>
-                        <input type="password" id="setting-api-key" class="input-field" placeholder="sk-proj-..." style="margin-bottom: 8px;">
-                        <div style="display: flex; gap: 8px;">
-                            <button class="btn-orange" onclick="saveApiKey()" style="padding: 8px 12px; font-size: 12px; flex: 1;">Save Key</button>
-                            <button class="btn-secondary" onclick="clearApiKey()" style="padding: 8px 12px; font-size: 12px;">Remove</button>
-                        </div>
-                    </div>
-
-                    <!-- TOGGLES -->
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <span style="font-size: 13px; font-weight: 600;">2. Workout Reminders</span>
-                        <input type="checkbox" id="set-toggle-1" class="toggle-switch" checked onchange="saveSettings()">
-                    </div>
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <span style="font-size: 13px; font-weight: 600;">3. Sound Effects</span>
-                        <input type="checkbox" id="set-toggle-2" class="toggle-switch" checked onchange="saveSettings()">
-                    </div>
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <span style="font-size: 13px; font-weight: 600;">4. Haptic Feedback</span>
-                        <input type="checkbox" id="set-toggle-3" class="toggle-switch" checked onchange="saveSettings()">
-                    </div>
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <span style="font-size: 13px; font-weight: 600;">5. Auto Save Workouts</span>
-                        <input type="checkbox" id="set-toggle-4" class="toggle-switch" checked onchange="saveSettings()">
-                    </div>
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <span style="font-size: 13px; font-weight: 600;">6. Achievement Notifications</span>
-                        <input type="checkbox" id="set-toggle-5" class="toggle-switch" checked onchange="saveSettings()">
-                    </div>
-
-                    <!-- SELECTORS -->
-                    <div>
-                        <label style="font-size: 12px; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">7. Weight Unit</label>
-                        <select id="set-unit-weight" class="input-field" onchange="saveSettings()">
-                            <option value="kg">Kilograms (kg)</option>
-                            <option value="lbs">Pounds (lbs)</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label style="font-size: 12px; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">8. Default Rest Timer</label>
-                        <select id="set-rest-time" class="input-field" onchange="saveSettings()">
-                            <option value="60">60 Seconds</option>
-                            <option value="90" selected>90 Seconds</option>
-                            <option value="120">120 Seconds</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label style="font-size: 12px; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">9. AI Model Preference</label>
-                        <select id="set-ai-model" class="input-field" onchange="saveSettings()">
-                            <option value="gpt-4o-mini">GPT-4o Mini (Fast)</option>
-                            <option value="gpt-4o">GPT-4o (Advanced)</option>
-                        </select>
-                    </div>
-
-                    <!-- DATA MANAGEMENT -->
-                    <hr style="border: 0; border-top: 1px solid var(--card-border); margin: 8px 0;">
-                    <span style="font-size: 12px; font-weight: 800; color: var(--text-muted);">DATA MANAGEMENT</span>
-                    
-                    <button class="btn-secondary" onclick="exportDataJSON()"><i data-lucide="download" style="width: 14px;"></i> Export Data (JSON)</button>
-                    <button class="btn-secondary" onclick="exportDataCSV()"><i data-lucide="file-text" style="width: 14px;"></i> Export Workouts (CSV)</button>
-                    <button class="btn-secondary" onclick="document.getElementById('import-file-input').click()"><i data-lucide="upload" style="width: 14px;"></i> Import Backup</button>
-                    <input type="file" id="import-file-input" style="display: none;" onchange="importDataJSON(event)">
-
-                    <!-- ACCOUNT DANGER ZONE -->
-                    <hr style="border: 0; border-top: 1px solid var(--card-border); margin: 8px 0;">
-                    <button class="btn-secondary" onclick="handleLogout()"><i data-lucide="log-out" style="width: 14px;"></i> Logout</button>
-                    <button class="btn-orange" style="background: var(--danger);" onclick="deleteAccount()"><i data-lucide="trash-2" style="width: 14px;"></i> Delete Account & Reset Data</button>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                    <input type="number" id="prof-weight" class="input-field" placeholder="Gewicht (kg)">
+                    <select id="prof-goal" class="input-field">
+                        <option value="Spiermassa">Spiermassa</option>
+                        <option value="Afvallen">Afvallen</option>
+                        <option value="Kracht">Kracht</option>
+                    </select>
                 </div>
+                <button class="btn-orange" id="btn-save-profile" style="padding: 10px; margin-top: 4px;">Opslaan</button>
+            </div>
+
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <span style="font-size: 12px; font-weight: 800; color: var(--text-muted);">GEWICHTSVERLOOP</span>
+                    <button class="btn-secondary" id="btn-log-weight" style="padding: 4px 8px; font-size: 11px;">+ Log Gewicht</button>
+                </div>
+                <canvas id="weightCanvas" width="320" height="120" style="width: 100%; height: 120px;"></canvas>
             </div>
         </div>
 
-        <!-- ACTIVE WORKOUT EXECUTION MODAL -->
-        <div class="modal-overlay" id="active-workout-modal">
-            <div class="modal-sheet" style="height: 90%;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-                    <div>
-                        <span style="font-size: 10px; font-weight: 800; color: var(--accent-orange);">ACTIVE SESSION</span>
-                        <h3 style="font-size: 20px; font-weight: 900;" id="active-routine-name">Push Day</h3>
-                    </div>
-                    <button class="btn-orange" onclick="finishActiveWorkout()" style="padding: 8px 14px; font-size: 12px; width: auto;">Finish</button>
+        <!-- SCREEN: SETTINGS -->
+        <div class="screen" id="screen-settings">
+            <div class="screen-header">
+                <div>
+                    <h2>Instellingen</h2>
+                    <p style="font-size: 12px; color: var(--text-muted);">App configuratie</p>
+                </div>
+            </div>
+
+            <div class="card" style="display: flex; flex-direction: column; gap: 12px;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-size: 14px; font-weight: 600;">Thema Mode</span>
+                    <button class="btn-secondary" id="theme-toggle-btn">Dark Mode</button>
                 </div>
 
-                <div id="active-exercise-list" style="display: flex; flex-direction: column; gap: 16px;">
-                    <!-- Injected active set trackers -->
-                </div>
+                <hr style="border: 0; border-top: 1px solid var(--card-border);">
+
+                <button class="btn-secondary" id="btn-export-data"><i data-lucide="download" style="width: 14px;"></i> Export Backup (JSON)</button>
+                <button class="btn-secondary" id="btn-trigger-import"><i data-lucide="upload" style="width: 14px;"></i> Import Backup</button>
+                <input type="file" id="import-file" style="display: none;" accept=".json">
+
+                <hr style="border: 0; border-top: 1px solid var(--card-border);">
+
+                <button class="btn-orange" style="background: var(--danger);" id="btn-reset-data"><i data-lucide="trash-2" style="width: 14px;"></i> Reset Alle Data</button>
             </div>
         </div>
 
-        <!-- LOG MEAL MODAL -->
-        <div class="modal-overlay" id="add-meal-modal">
+        <!-- ACTIVE WORKOUT MODAL -->
+        <div class="modal-overlay" id="modal-active-workout">
             <div class="modal-sheet">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-                    <h3 style="font-size: 18px; font-weight: 800;">Log Meal Intake</h3>
-                    <i data-lucide="x" style="cursor: pointer;" onclick="closeModal('add-meal-modal')"></i>
+                    <div>
+                        <span style="font-size: 10px; font-weight: 800; color: var(--accent-orange);">ACTIEVE SESSIE</span>
+                        <h3 style="font-size: 18px; font-weight: 900;" id="active-routine-title">Push Routine</h3>
+                    </div>
+                    <button class="btn-orange" style="width: auto; padding: 6px 12px; font-size: 12px;" id="btn-finish-workout">Afronden</button>
                 </div>
-                <input type="text" id="meal-name-input" class="input-field" placeholder="Meal Name (e.g. Chicken & Rice)">
-                <input type="number" id="meal-cal-input" class="input-field" placeholder="Calories (kcal)">
-                <input type="number" id="meal-pro-input" class="input-field" placeholder="Protein (g)">
-                <input type="number" id="meal-carb-input" class="input-field" placeholder="Carbs (g)">
-                <input type="number" id="meal-fat-input" class="input-field" placeholder="Fat (g)">
-                <button class="btn-orange" onclick="saveMealLog()">Add to Diary</button>
+                <div id="active-exercise-container"></div>
             </div>
         </div>
 
-        <!-- LOG WEIGHT MODAL -->
-        <div class="modal-overlay" id="add-weight-modal">
+        <!-- ADD MEAL MODAL -->
+        <div class="modal-overlay" id="modal-add-meal">
             <div class="modal-sheet">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-                    <h3 style="font-size: 18px; font-weight: 800;">Log Bodyweight</h3>
-                    <i data-lucide="x" style="cursor: pointer;" onclick="closeModal('add-weight-modal')"></i>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+                    <h3 style="font-size: 16px; font-weight: 800;">Maaltijd Toevoegen</h3>
+                    <i data-lucide="x" style="cursor: pointer;" id="btn-close-meal-modal"></i>
                 </div>
-                <input type="number" id="weight-log-input" class="input-field" placeholder="Weight in kg (e.g. 78.5)">
-                <button class="btn-orange" onclick="saveWeightLog()">Save Metric</button>
+                <input type="text" id="meal-input-name" class="input-field" placeholder="Naam maaltijd (bv. Kip & Rijst)">
+                <input type="number" id="meal-input-cal" class="input-field" placeholder="Calorieën (kcal)">
+                <input type="number" id="meal-input-pro" class="input-field" placeholder="Eiwitten (g)">
+                <input type="number" id="meal-input-carb" class="input-field" placeholder="Koolhydraten (g)">
+                <input type="number" id="meal-input-fat" class="input-field" placeholder="Vetten (g)">
+                <button class="btn-orange" id="btn-save-meal">Opslaan</button>
             </div>
         </div>
 
-        <!-- BOTTOM NAVIGATION BAR -->
+        <!-- BOTTOM NAVIGATION -->
         <nav id="bottom-nav">
-            <div class="nav-item active" onclick="switchTab('home', this)">
+            <div class="nav-item active" data-tab="home">
                 <i data-lucide="home"></i>
                 <span>Home</span>
             </div>
-            <div class="nav-item" onclick="switchTab('workout', this)">
+            <div class="nav-item" data-tab="workout">
                 <i data-lucide="dumbbell"></i>
                 <span>Workout</span>
             </div>
-            <div class="nav-item" onclick="switchTab('nutrition', this)">
+            <div class="nav-item" data-tab="nutrition">
                 <i data-lucide="utensils"></i>
-                <span>Nutrition</span>
+                <span>Voeding</span>
             </div>
-            <div class="nav-item" onclick="switchTab('coach', this)">
+            <div class="nav-item" data-tab="coach">
                 <i data-lucide="bot"></i>
-                <span>IRON AI</span>
+                <span>AI Coach</span>
             </div>
-            <div class="nav-item" onclick="switchTab('profile', this)">
+            <div class="nav-item" data-tab="profile">
                 <i data-lucide="user"></i>
-                <span>Profile</span>
+                <span>Profiel</span>
+            </div>
+            <div class="nav-item" data-tab="settings">
+                <i data-lucide="settings"></i>
+                <span>Opties</span>
             </div>
         </nav>
 
     </div>
 
-    <!-- ==========================================
-         JAVASCRIPT APPLICATION LOGIC
-         ========================================== -->
     <script>
         /* ==========================================
-           1. LOCAL STORAGE & STATE ARCHITECTURE
+           1. SAFE UTILITIES & CRASH PREVENTION
            ========================================== */
-        const DEFAULT_STATE = {
-            auth: {
-                isLoggedIn: false,
-                email: '',
-                password: '',
-                onboarded: false
-            },
-            profile: {
-                name: 'Athlete',
-                age: 25,
-                height: 180,
-                weight: 75,
-                goal: 'Build Muscle',
-                experience: 'Intermediate',
-                daysPerWeek: 4
-            },
-            stats: {
-                streak: 0,
-                totalWorkouts: 0,
-                totalVolume: 0
-            },
-            settings: {
-                theme: 'dark',
-                apiKey: '',
-                reminders: true,
-                sound: true,
-                haptics: true,
-                autoSave: true,
-                achievementNotifs: true,
-                unitWeight: 'kg',
-                restTimer: 90,
-                aiModel: 'gpt-4o-mini'
-            },
-            workouts: [],
-            meals: [],
-            weightLogs: [],
-            chatHistory: []
-        };
-
-        let db = JSON.parse(localStorage.getItem('IRONVAULT_DB')) || DEFAULT_STATE;
-
-        function saveDB() {
-            localStorage.setItem('IRONVAULT_DB', JSON.stringify(db));
+        function safeSetText(id, text) {
+            try {
+                var el = document.getElementById(id);
+                if (el) el.innerText = String(text);
+            } catch (e) { console.error("Error setting text:", id, e); }
         }
 
-        // Timer Global
-        let restTimerInterval = null;
-
-        /* ==========================================
-           2. INITIALIZATION & AUTHENTICATION
-           ========================================== */
-        document.addEventListener('DOMContentLoaded', () => {
-            lucide.createIcons();
-            applyTheme(db.settings.theme);
-
-            if (!db.auth.isLoggedIn) {
-                document.getElementById('auth-overlay').classList.remove('hidden');
-            } else if (!db.auth.onboarded) {
-                document.getElementById('auth-overlay').classList.add('hidden');
-                document.getElementById('onboarding-overlay').classList.remove('hidden');
-            } else {
-                document.getElementById('auth-overlay').classList.add('hidden');
-                document.getElementById('onboarding-overlay').classList.add('hidden');
-            }
-
-            refreshUI();
-        });
-
-        function toggleAuthMode(mode) {
-            document.getElementById('login-form-container').style.display = mode === 'login' ? 'block' : 'none';
-            document.getElementById('register-form-container').style.display = mode === 'register' ? 'block' : 'none';
+        function safeSetValue(id, val) {
+            try {
+                var el = document.getElementById(id);
+                if (el) el.value = String(val);
+            } catch (e) { console.error("Error setting value:", id, e); }
         }
 
-        function handleLogin() {
-            const email = document.getElementById('login-email').value.trim();
-            const pass = document.getElementById('login-password').value.trim();
-
-            if (!email || !pass) {
-                alert('Please enter email and password.');
-                return;
-            }
-
-            db.auth.isLoggedIn = true;
-            db.auth.email = email;
-            saveDB();
-
-            document.getElementById('auth-overlay').classList.add('hidden');
-            if (!db.auth.onboarded) {
-                document.getElementById('onboarding-overlay').classList.remove('hidden');
-            } else {
-                refreshUI();
-            }
+        function safeSetStyleWidth(id, width) {
+            try {
+                var el = document.getElementById(id);
+                if (el) el.style.width = String(width);
+            } catch (e) { console.error("Error setting width:", id, e); }
         }
 
-        function handleRegister() {
-            const name = document.getElementById('reg-name').value.trim();
-            const email = document.getElementById('reg-email').value.trim();
-            const pass = document.getElementById('reg-password').value.trim();
-            const conf = document.getElementById('reg-confirm').value.trim();
-
-            if (!name || !email || !pass) {
-                alert('All fields required.');
-                return;
-            }
-            if (pass !== conf) {
-                alert('Passwords do not match.');
-                return;
-            }
-
-            db.auth.isLoggedIn = true;
-            db.auth.email = email;
-            db.profile.name = name;
-            saveDB();
-
-            document.getElementById('auth-overlay').classList.add('hidden');
-            document.getElementById('onboarding-overlay').classList.remove('hidden');
-        }
-
-        function handleLogout() {
-            db.auth.isLoggedIn = false;
-            saveDB();
-            closeModal('settings-modal');
-            document.getElementById('auth-overlay').classList.remove('hidden');
-        }
-
-        function deleteAccount() {
-            if (confirm("Are you sure you want to completely erase your account and data?")) {
-                localStorage.removeItem('IRONVAULT_DB');
-                db = DEFAULT_STATE;
-                location.reload();
-            }
+        function renderIcons() {
+            try {
+                if (window.lucide && typeof window.lucide.createIcons === 'function') {
+                    window.lucide.createIcons();
+                }
+            } catch(e) { console.warn("Icons render ignored:", e); }
         }
 
         /* ==========================================
-           3. ONBOARDING
+           2. STATE & LOCALSTORAGE MANAGEMENT
            ========================================== */
-        function nextOnboardingStep(step) {
-            document.getElementById('onboard-step-1').style.display = 'none';
-            document.getElementById('onboard-step-2').style.display = 'block';
-            document.getElementById('onboard-step-title').innerText = 'Training Focus';
-        }
-
-        function finishOnboarding() {
-            db.profile.age = parseInt(document.getElementById('onboard-age').value) || 25;
-            db.profile.height = parseInt(document.getElementById('onboard-height').value) || 180;
-            db.profile.weight = parseFloat(document.getElementById('onboard-weight').value) || 75;
-            db.profile.goal = document.getElementById('onboard-goal').value;
-            db.profile.experience = document.getElementById('onboard-experience').value;
-            db.profile.daysPerWeek = parseInt(document.getElementById('onboard-days').value);
-
-            db.auth.onboarded = true;
-            saveDB();
-
-            document.getElementById('onboarding-overlay').classList.add('hidden');
-            refreshUI();
-        }
-
-        /* ==========================================
-           4. NAVIGATION & THEME SYSTEM
-           ========================================== */
-        function switchTab(tabId, element) {
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-
-            document.getElementById(`screen-${tabId}`).classList.add('active');
-            if (element) element.classList.add('active');
-        }
-
-        function setTheme(themeName) {
-            db.settings.theme = themeName;
-            saveDB();
-            applyTheme(themeName);
-        }
-
-        function applyTheme(themeName) {
-            document.documentElement.setAttribute('data-theme', themeName);
-            document.getElementById('setting-theme').value = themeName;
-        }
-
-        /* ==========================================
-           5. UI REFRESH & DASHBOARD LOGIC
-           ========================================== */
-        function refreshUI() {
-            // Profile & Greetings
-            document.getElementById('home-user-greeting').innerText = `Welcome, ${db.profile.name} 👋`;
-            document.getElementById('profile-name').innerText = db.profile.name;
-            document.getElementById('profile-avatar').innerText = db.profile.name.charAt(0).toUpperCase();
-            document.getElementById('profile-goal-badge').innerText = `Goal: ${db.profile.goal}`;
-            document.getElementById('profile-stats-summary').innerText = `${db.profile.weight} kg • ${db.profile.height} cm • ${db.profile.experience}`;
-
-            // Home Stats
-            document.getElementById('stat-home-streak').innerText = db.stats.streak;
-            document.getElementById('stat-home-workouts').innerText = db.stats.totalWorkouts;
-            document.getElementById('stat-home-volume').innerText = `${db.stats.totalVolume}kg`;
-
-            // Nutrition Summary
-            const todayMeals = db.meals;
-            const totalCal = todayMeals.reduce((acc, m) => acc + m.calories, 0);
-            const totalPro = todayMeals.reduce((acc, m) => acc + m.protein, 0);
-            const totalCarb = todayMeals.reduce((acc, m) => acc + m.carbs, 0);
-            const totalFat = todayMeals.reduce((acc, m) => acc + m.fat, 0);
-
-            document.getElementById('nutr-current-cal').innerText = totalCal;
-            document.getElementById('nutr-protein-text').innerText = `${totalPro}g / 180g`;
-            document.getElementById('nutr-carbs-text').innerText = `${totalCarb}g / 250g`;
-            document.getElementById('nutr-fats-text').innerText = `${totalFat}g / 65g`;
-
-            document.getElementById('bar-protein').style.width = `${Math.min((totalPro / 180) * 100, 100)}%`;
-            document.getElementById('bar-carbs').style.width = `${Math.min((totalCarb / 250) * 100, 100)}%`;
-            document.getElementById('bar-fats').style.width = `${Math.min((totalFat / 65) * 100, 100)}%`;
-
-            renderWorkoutHistory();
-            renderMealLog();
-            renderWeightChart();
-            renderBadges();
-            renderChatHistory();
-
-            lucide.createIcons();
-        }
-
-        /* ==========================================
-           6. WORKOUT TRACKING ENGINE
-           ========================================== */
-        const ROUTINE_TEMPLATES = {
-            'Push Day': [
-                { name: 'Barbell Bench Press', sets: 4, weight: 60, reps: 8 },
-                { name: 'Incline Dumbbell Press', sets: 3, weight: 22, reps: 10 },
-                { name: 'Cable Tricep Pushdown', sets: 3, weight: 25, reps: 12 }
+        var DEFAULT_STATE = {
+            profile: { name: 'Alex', age: 26, height: 182, weight: 80, goal: 'Spiermassa' },
+            stats: { streak: 3, workoutsCount: 5 },
+            theme: 'dark',
+            meals: [
+                { id: 1, name: 'Havermout met Proteïne', calories: 450, protein: 35, carbs: 55, fat: 8 },
+                { id: 2, name: 'Kip, Rijst & Broccoli', calories: 650, protein: 50, carbs: 70, fat: 10 }
             ],
-            'Pull Day': [
-                { name: 'Lat Pulldown', sets: 4, weight: 55, reps: 10 },
-                { name: 'Seated Cable Row', sets: 3, weight: 50, reps: 10 },
-                { name: 'Barbell Bicep Curl', sets: 3, weight: 25, reps: 12 }
+            workouts: [
+                { id: 101, title: 'Push Day', date: 'Gisteren', volume: '2,400 kg' }
             ],
-            'Legs Focus': [
-                { name: 'Barbell Squat', sets: 4, weight: 80, reps: 8 },
-                { name: 'Romanian Deadlift', sets: 3, weight: 70, reps: 10 },
-                { name: 'Leg Extension', sets: 3, weight: 45, reps: 12 }
+            weightHistory: [
+                { date: '1 Jan', weight: 82.0 },
+                { date: '10 Jan', weight: 81.2 },
+                { date: '20 Jan', weight: 80.5 },
+                { date: 'Vandaag', weight: 80.0 }
             ],
-            'Upper Power': [
-                { name: 'Overhead Press', sets: 4, weight: 40, reps: 6 },
-                { name: 'Pull Ups', sets: 3, weight: 0, reps: 8 },
-                { name: 'Dumbbell Chest Fly', sets: 3, weight: 16, reps: 12 }
+            chatHistory: [
+                { sender: 'ai', text: 'Hallo! Ik ben je IRON AI Coach. Hoe kan ik je vandaag helpen met je training of voeding?' }
             ]
         };
 
-        function startWorkoutRoutine(routineName) {
-            document.getElementById('active-routine-name').innerText = routineName;
-            const container = document.getElementById('active-exercise-list');
-            const exercises = ROUTINE_TEMPLATES[routineName] || ROUTINE_TEMPLATES['Push Day'];
+        var appState = JSON.parse(JSON.stringify(DEFAULT_STATE));
 
-            container.innerHTML = exercises.map((ex, i) => `
-                <div class="card">
-                    <div style="font-weight: 800; font-size: 15px; margin-bottom: 8px;">${i+1}. ${ex.name}</div>
-                    <div style="display: flex; flex-direction: column; gap: 6px;">
-                        ${Array.from({length: ex.sets}).map((_, s) => `
-                            <div style="display: flex; align-items: center; justify-content: space-between; background: var(--secondary-metal); padding: 8px 12px; border-radius: 8px;">
-                                <span style="font-size: 11px; font-weight: 700; color: var(--text-muted);">SET ${s+1}</span>
-                                <div style="display: flex; gap: 8px; align-items: center;">
-                                    <input type="number" value="${ex.weight}" style="width: 50px; background: var(--input-bg); border: 1px solid var(--card-border); color: #FFF; text-align: center; border-radius: 4px; font-size: 12px;"> kg
-                                    <input type="number" value="${ex.reps}" style="width: 45px; background: var(--input-bg); border: 1px solid var(--card-border); color: #FFF; text-align: center; border-radius: 4px; font-size: 12px;"> reps
-                                </div>
-                                <button class="btn-secondary" onclick="markSetComplete(this)" style="padding: 4px 8px; font-size: 10px;">Check</button>
-                            </div>
-                        `).map(item => item).join('')}
-                    </div>
-                </div>
-            `).join('');
-
-            openModal('active-workout-modal');
-        }
-
-        function markSetComplete(btn) {
-            btn.style.background = 'var(--success)';
-            btn.style.color = '#000';
-            btn.innerText = '✓ Done';
-            triggerRestTimer(db.settings.restTimer);
-        }
-
-        function finishActiveWorkout() {
-            const routineName = document.getElementById('active-routine-name').innerText;
-            const newWorkout = {
-                id: Date.now(),
-                title: routineName,
-                date: new Date().toLocaleDateString(),
-                volume: 1250 // Calculated estimation
-            };
-
-            db.workouts.unshift(newWorkout);
-            db.stats.totalWorkouts += 1;
-            db.stats.totalVolume += 1250;
-            db.stats.streak += 1;
-
-            saveDB();
-            closeModal('active-workout-modal');
-            refreshUI();
-        }
-
-        function renderWorkoutHistory() {
-            const list = document.getElementById('workout-history-list');
-            if (db.workouts.length === 0) {
-                list.innerHTML = `
-                    <div class="empty-state">
-                        <i data-lucide="dumbbell" style="width: 32px; height: 32px;"></i>
-                        <p style="font-size: 13px;">No workouts logged yet. Start your first session above!</p>
-                    </div>
-                `;
-                return;
-            }
-
-            list.innerHTML = db.workouts.map(w => `
-                <div class="card" style="display: flex; justify-content: space-between; align-items: center;">
-                    <div>
-                        <div style="font-weight: 800; font-size: 14px;">${w.title}</div>
-                        <div style="font-size: 11px; color: var(--text-muted);">${w.date}</div>
-                    </div>
-                    <span style="font-size: 12px; font-weight: 800; color: var(--accent-orange);">${w.volume} kg</span>
-                </div>
-            `).join('');
-        }
-
-        /* ==========================================
-           7. REST TIMER CONTROLLER
-           ========================================== */
-        function triggerRestTimer(seconds) {
-            clearInterval(restTimerInterval);
-            let remaining = parseInt(seconds);
-            const bar = document.getElementById('rest-timer-bar');
-            bar.style.display = 'flex';
-
-            restTimerInterval = setInterval(() => {
-                remaining--;
-                const m = Math.floor(remaining / 60);
-                const s = remaining % 60;
-                document.getElementById('rest-timer-display').innerText = `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
-
-                if (remaining <= 0) {
-                    stopRestTimer();
+        function loadState() {
+            try {
+                var data = localStorage.getItem('IRONVAULT_STATE');
+                if (data) {
+                    var parsed = JSON.parse(data);
+                    appState = Object.assign({}, DEFAULT_STATE, parsed);
                 }
-            }, 1000);
+            } catch (e) {
+                console.error("Failed to load state, reverting to default", e);
+                appState = JSON.parse(JSON.stringify(DEFAULT_STATE));
+            }
         }
 
-        function stopRestTimer() {
-            clearInterval(restTimerInterval);
-            document.getElementById('rest-timer-bar').style.display = 'none';
+        function saveState() {
+            try {
+                localStorage.setItem('IRONVAULT_STATE', JSON.stringify(appState));
+            } catch (e) {
+                console.error("Failed to save state", e);
+            }
         }
 
         /* ==========================================
-           8. NUTRITION ENGINE
+           3. ROUTINES & TEMPLATES
            ========================================== */
-        function saveMealLog() {
-            const name = document.getElementById('meal-name-input').value.trim();
-            const cal = parseInt(document.getElementById('meal-cal-input').value) || 0;
-            const pro = parseInt(document.getElementById('meal-pro-input').value) || 0;
-            const carb = parseInt(document.getElementById('meal-carb-input').value) || 0;
-            const fat = parseInt(document.getElementById('meal-fat-input').value) || 0;
-
-            if (!name || cal <= 0) {
-                alert('Please enter a valid meal name and calorie count.');
-                return;
-            }
-
-            db.meals.push({ id: Date.now(), name, calories: cal, protein: pro, carbs: carb, fat });
-            saveDB();
-            closeModal('add-meal-modal');
-            refreshUI();
-        }
-
-        function renderMealLog() {
-            const list = document.getElementById('meal-log-list');
-            if (db.meals.length === 0) {
-                list.innerHTML = `
-                    <div class="empty-state">
-                        <i data-lucide="utensils" style="width: 32px; height: 32px;"></i>
-                        <p style="font-size: 13px;">0 calories logged today. Add a meal to fuel recovery.</p>
-                    </div>
-                `;
-                return;
-            }
-
-            list.innerHTML = db.meals.map(m => `
-                <div class="card" style="display: flex; justify-content: space-between; align-items: center;">
-                    <div>
-                        <div style="font-weight: 800; font-size: 14px;">${m.name}</div>
-                        <div style="font-size: 11px; color: var(--text-muted);">${m.protein}g Protein • ${m.carbs}g Carbs • ${m.fat}g Fat</div>
-                    </div>
-                    <span style="font-size: 13px; font-weight: 800; color: var(--text-main);">${m.calories} kcal</span>
-                </div>
-            `).join('');
-        }
+        var ROUTINES = {
+            'Push': [
+                { name: 'Bench Press', sets: 3, defaultWeight: 70, defaultReps: 8 },
+                { name: 'Incline Dumbbell Press', sets: 3, defaultWeight: 24, defaultReps: 10 },
+                { name: 'Cable Flyes', sets: 3, defaultWeight: 15, defaultReps: 12 },
+                { name: 'Tricep Pushdown', sets: 3, defaultWeight: 25, defaultReps: 12 }
+            ],
+            'Pull': [
+                { name: 'Lat Pulldown', sets: 3, defaultWeight: 60, defaultReps: 10 },
+                { name: 'Barbell Row', sets: 3, defaultWeight: 50, defaultReps: 8 },
+                { name: 'Face Pulls', sets: 3, defaultWeight: 20, defaultReps: 15 },
+                { name: 'Bicep Curls', sets: 3, defaultWeight: 14, defaultReps: 10 }
+            ],
+            'Upper': [
+                { name: 'Overhead Press', sets: 3, defaultWeight: 40, defaultReps: 8 },
+                { name: 'Pull Ups', sets: 3, defaultWeight: 0, defaultReps: 8 },
+                { name: 'Dumbbell Chest Fly', sets: 3, defaultWeight: 16, defaultReps: 12 }
+            ],
+            'Full Body': [
+                { name: 'Squat', sets: 3, defaultWeight: 80, defaultReps: 8 },
+                { name: 'Bench Press', sets: 3, defaultWeight: 60, defaultReps: 8 },
+                { name: 'Romanian Deadlift', sets: 3, defaultWeight: 70, defaultReps: 10 }
+            ]
+        };
 
         /* ==========================================
-           9. PROFILE & WEIGHT CHART ENGINE
+           4. UI RENDERING PIPELINE
            ========================================== */
-        function saveWeightLog() {
-            const weight = parseFloat(document.getElementById('weight-log-input').value);
-            if (!weight) return;
+        function renderAll() {
+            try {
+                document.documentElement.setAttribute('data-theme', appState.theme || 'dark');
+                safeSetText('theme-toggle-btn', appState.theme === 'light' ? 'Light Mode' : 'Dark Mode');
 
-            db.profile.weight = weight;
-            db.weightLogs.push({ date: new Date().toLocaleDateString(), weight });
-            saveDB();
-            closeModal('add-weight-modal');
-            refreshUI();
+                safeSetText('home-greeting', 'Welkom terug, ' + (appState.profile.name || 'Athlete'));
+                safeSetText('avatar-icon', (appState.profile.name || 'A').charAt(0).toUpperCase());
+
+                safeSetValue('prof-name', appState.profile.name || '');
+                safeSetValue('prof-age', appState.profile.age || '');
+                safeSetValue('prof-height', appState.profile.height || '');
+                safeSetValue('prof-weight', appState.profile.weight || '');
+                safeSetValue('prof-goal', appState.profile.goal || 'Spiermassa');
+
+                safeSetText('stat-streak', (appState.stats.streak || 0) + ' dagen');
+                safeSetText('stat-workouts', appState.stats.workoutsCount || 0);
+                safeSetText('stat-weight', (appState.profile.weight || 0) + ' kg');
+
+                var totalCal = 0, totalPro = 0, totalCarb = 0, totalFat = 0;
+                if (Array.isArray(appState.meals)) {
+                    appState.meals.forEach(function(m) {
+                        totalCal += Number(m.calories || 0);
+                        totalPro += Number(m.protein || 0);
+                        totalCarb += Number(m.carbs || 0);
+                        totalFat += Number(m.fat || 0);
+                    });
+                }
+
+                safeSetText('stat-calories', totalCal + ' kcal');
+                safeSetText('nutr-total-cal', totalCal + ' / 2500 kcal');
+                safeSetText('nutr-pro-text', totalPro + 'g / 180g');
+                safeSetText('nutr-carb-text', totalCarb + 'g / 250g');
+                safeSetText('nutr-fat-text', totalFat + 'g / 70g');
+
+                safeSetStyleWidth('bar-pro', Math.min((totalPro / 180) * 100, 100) + '%');
+                safeSetStyleWidth('bar-carb', Math.min((totalCarb / 250) * 100, 100) + '%');
+                safeSetStyleWidth('bar-fat', Math.min((totalFat / 70) * 100, 100) + '%');
+
+                renderMealsList();
+                renderWorkoutHistoryList();
+                renderChatThread();
+                drawWeightChart();
+                renderIcons();
+            } catch (e) {
+                console.error("Critical render error caught:", e);
+            }
         }
 
-        function renderWeightChart() {
-            const canvas = document.getElementById('weightChart');
-            if (!canvas) return;
-            const ctx = canvas.getContext('2d');
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            if (db.weightLogs.length < 2) {
-                ctx.fillStyle = '#8E9BAE';
-                ctx.font = '12px -apple-system';
-                ctx.fillText('Log at least 2 weight entries to generate trend graph.', 20, 70);
+        function renderMealsList() {
+            var list = document.getElementById('meal-log-list');
+            if (!list) return;
+            if (!appState.meals || appState.meals.length === 0) {
+                list.innerHTML = '<p style="font-size:12px; color:var(--text-muted);">Nog geen maaltijden gelogd vandaag.</p>';
                 return;
             }
-
-            ctx.beginPath();
-            ctx.strokeStyle = '#FF6B00';
-            ctx.lineWidth = 3;
-
-            const logs = db.weightLogs;
-            const stepX = canvas.width / (logs.length - 1);
-
-            logs.forEach((log, index) => {
-                const x = index * stepX;
-                const y = 100 - ((log.weight - 50) * 1.5); // Simple scaling
-                if (index === 0) ctx.moveTo(x, y);
-                else ctx.lineTo(x, y);
+            var html = '';
+            appState.meals.forEach(function(m) {
+                html += '<div class="card" style="display:flex; justify-content:space-between; align-items:center;">' +
+                    '<div>' +
+                        '<div style="font-weight:800; font-size:14px;">' + m.name + '</div>' +
+                        '<div style="font-size:11px; color:var(--text-muted);">' + m.protein + 'g Eiwit • ' + m.carbs + 'g Koolh • ' + m.fat + 'g Vet</div>' +
+                    '</div>' +
+                    '<div style="font-weight:900; font-size:14px; color:var(--accent-orange);">' + m.calories + ' kcal</div>' +
+                '</div>';
             });
-
-            ctx.stroke();
+            list.innerHTML = html;
         }
 
-        function renderBadges() {
-            const grid = document.getElementById('badge-grid');
-            const badges = [
-                { name: '1st Workout', unlocked: db.stats.totalWorkouts >= 1, icon: 'zap' },
-                { name: '7 Day Streak', unlocked: db.stats.streak >= 7, icon: 'flame' },
-                { name: '10k Lifted', unlocked: db.stats.totalVolume >= 10000, icon: 'award' },
-                { name: 'Master Fuel', unlocked: db.meals.length >= 5, icon: 'shield-check' }
-            ];
-
-            grid.innerHTML = badges.map(b => `
-                <div class="card" style="padding: 10px 4px; text-align: center; opacity: ${b.unlocked ? '1' : '0.35'};">
-                    <i data-lucide="${b.icon}" style="color: var(--accent-orange); margin: 0 auto 4px auto; width: 18px;"></i>
-                    <div style="font-size: 9px; font-weight: 700;">${b.name}</div>
-                </div>
-            `).join('');
-        }
-
-        /* ==========================================
-           10. IRON AI COACH & API INTEGRATION
-           ========================================== */
-        function saveApiKey() {
-            const key = document.getElementById('setting-api-key').value.trim();
-            db.settings.apiKey = key;
-            saveDB();
-            document.getElementById('ai-status-indicator').innerText = key ? 'Connected (OpenAI Custom API)' : 'Connected (Built-In Engine)';
-            alert('API Key configuration saved.');
-        }
-
-        function clearApiKey() {
-            db.settings.apiKey = '';
-            document.getElementById('setting-api-key').value = '';
-            saveDB();
-            document.getElementById('ai-status-indicator').innerText = 'Connected (Built-In Engine)';
-        }
-
-        function sendChatMessage() {
-            const input = document.getElementById('chat-input');
-            const text = input.value.trim();
-            if (!text) return;
-
-            db.chatHistory.push({ sender: 'user', text });
-            input.value = '';
-            renderChatHistory();
-
-            // Simulate or Execute Real AI Call
-            setTimeout(async () => {
-                let aiResponse = "";
-
-                if (db.settings.apiKey) {
-                    try {
-                        const res = await fetch('https://api.openai.com/v1/chat/completions', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'Authorization': `Bearer ${db.settings.apiKey}`
-                            },
-                            body: JSON.stringify({
-                                model: db.settings.aiModel,
-                                messages: [
-                                    { role: 'system', content: `You are IRON AI, a professional gym coach. Goal: ${db.profile.goal}` },
-                                    { role: 'user', content: text }
-                                ]
-                            })
-                        });
-                        const data = await res.json();
-                        aiResponse = data.choices[0].message.content;
-                    } catch (err) {
-                        aiResponse = "API key error. Fallback: For hypertrophy, maintain 1.6-2.2g of protein per kg of bodyweight and prioritize dynamic progressive overload.";
-                    }
-                } else {
-                    // Fallback Rules Engine
-                    if (text.toLowerCase().includes('chest')) {
-                        aiResponse = "Based on your hypertrophy profile, focus on heavy compound presses first (Barbell Bench), followed by targeted isolation like Cable Flyes.";
-                    } else if (text.toLowerCase().includes('protein')) {
-                        aiResponse = `Your daily protein target is ${Math.round(db.profile.weight * 2)}g. Distribute this across 3-4 meals for peak muscle protein synthesis.`;
-                    } else {
-                        aiResponse = "Consistency is paramount. Ensure you log every working set and progressive overload increment inside IRONVAULT.";
-                    }
-                }
-
-                db.chatHistory.push({ sender: 'ai', text: aiResponse });
-                saveDB();
-                renderChatHistory();
-            }, 600);
-        }
-
-        function renderChatHistory() {
-            const thread = document.getElementById('chat-thread');
-            if (db.chatHistory.length === 0) {
-                thread.innerHTML = `
-                    <div style="align-self: flex-start; max-width: 85%; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 12px; font-size: 12px; line-height: 1.4;">
-                        Greetings ${db.profile.name}. I am IRON AI. Ask me anything regarding your workout split, macro targets, or recovery strategy.
-                    </div>
-                `;
+        function renderWorkoutHistoryList() {
+            var list = document.getElementById('workout-history-list');
+            if (!list) return;
+            if (!appState.workouts || appState.workouts.length === 0) {
+                list.innerHTML = '<p style="font-size:12px; color:var(--text-muted);">Nog geen workouts opgeslagen.</p>';
                 return;
             }
+            var html = '';
+            appState.workouts.forEach(function(w) {
+                html += '<div class="card" style="display:flex; justify-content:space-between; align-items:center;">' +
+                    '<div>' +
+                        '<div style="font-weight:800; font-size:14px;">' + w.title + '</div>' +
+                        '<div style="font-size:11px; color:var(--text-muted);">' + w.date + '</div>' +
+                    '</div>' +
+                    '<div class="badge">' + (w.volume || 'Afgerond') + '</div>' +
+                '</div>';
+            });
+            list.innerHTML = html;
+        }
 
-            thread.innerHTML = db.chatHistory.map(m => `
-                <div style="align-self: ${m.sender === 'user' ? 'flex-end' : 'flex-start'}; max-width: 85%; background: ${m.sender === 'user' ? 'var(--accent-orange)' : 'var(--card-bg)'}; color: ${m.sender === 'user' ? '#FFF' : 'var(--text-main)'}; border: 1px solid ${m.sender === 'user' ? 'transparent' : 'var(--card-border)'}; border-radius: 12px; padding: 10px 14px; font-size: 12px; line-height: 1.4;">
-                    ${m.text}
-                </div>
-            `).join('');
-
+        function renderChatThread() {
+            var thread = document.getElementById('chat-thread');
+            if (!thread) return;
+            var html = '';
+            appState.chatHistory.forEach(function(c) {
+                var isAI = c.sender === 'ai';
+                html += '<div style="display:flex; justify-content:' + (isAI ? 'flex-start' : 'flex-end') + ';">' +
+                    '<div style="max-width:80%; padding:10px 14px; border-radius:14px; font-size:13px; line-height:1.4; ' +
+                    (isAI ? 'background:var(--secondary-metal); color:var(--text-main);' : 'background:var(--accent-orange); color:#FFF;') + '">' +
+                        c.text +
+                    '</div>' +
+                '</div>';
+            });
+            thread.innerHTML = html;
             thread.scrollTop = thread.scrollHeight;
         }
 
-        function clearAiChat() {
-            db.chatHistory = [];
-            saveDB();
-            renderChatHistory();
+        function drawWeightChart() {
+            var canvas = document.getElementById('weightCanvas');
+            if (!canvas || !canvas.getContext) return;
+            var ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            var data = appState.weightHistory || [];
+            if (data.length < 2) return;
+
+            ctx.beginPath();
+            ctx.strokeStyle = '#FF5500';
+            ctx.lineWidth = 3;
+
+            var step = canvas.width / (data.length - 1);
+            var minW = Math.min.apply(Math, data.map(function(d){ return d.weight; })) - 1;
+            var maxW = Math.max.apply(Math, data.map(function(d){ return d.weight; })) + 1;
+
+            data.forEach(function(d, i) {
+                var x = i * step;
+                var y = canvas.height - ((d.weight - minW) / (maxW - minW)) * (canvas.height - 20) - 10;
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            });
+            ctx.stroke();
         }
 
         /* ==========================================
-           11. DATA MANAGEMENT (EXPORT / IMPORT)
+           5. EVENT HANDLERS & NAVIGATION
            ========================================== */
-        function saveSettings() {
-            db.settings.reminders = document.getElementById('set-toggle-1').checked;
-            db.settings.sound = document.getElementById('set-toggle-2').checked;
-            db.settings.haptics = document.getElementById('set-toggle-3').checked;
-            db.settings.autoSave = document.getElementById('set-toggle-4').checked;
-            db.settings.achievementNotifs = document.getElementById('set-toggle-5').checked;
-            db.settings.unitWeight = document.getElementById('set-unit-weight').value;
-            db.settings.restTimer = parseInt(document.getElementById('set-rest-time').value);
-            db.settings.aiModel = document.getElementById('set-ai-model').value;
-            saveDB();
-        }
+        document.addEventListener('DOMContentLoaded', function() {
+            loadState();
+            renderAll();
 
-        function exportDataJSON() {
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(db));
-            const downloadAnchor = document.createElement('a');
-            downloadAnchor.setAttribute("href", dataStr);
-            downloadAnchor.setAttribute("download", `IRONVAULT_BACKUP_${Date.now()}.json`);
-            document.body.appendChild(downloadAnchor);
-            downloadAnchor.click();
-            downloadAnchor.remove();
-        }
-
-        function exportDataCSV() {
-            if (db.workouts.length === 0) {
-                alert('No workout data available to export.');
-                return;
-            }
-
-            let csvContent = "data:text/csv;charset=utf-8,ID,Date,Title,Volume(kg)\n";
-            db.workouts.forEach(w => {
-                csvContent += `${w.id},${w.date},${w.title},${w.volume}\n`;
+            // Navigation Tabs
+            document.querySelectorAll('.nav-item').forEach(function(item) {
+                item.addEventListener('click', function() {
+                    var targetTab = this.getAttribute('data-tab');
+                    document.querySelectorAll('.nav-item').forEach(function(n) { n.classList.remove('active'); });
+                    document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active'); });
+                    
+                    this.classList.add('active');
+                    var targetScreen = document.getElementById('screen-' + targetTab);
+                    if (targetScreen) targetScreen.classList.add('active');
+                });
             });
 
-            const encodedUri = encodeURI(csvContent);
-            const link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", `IRONVAULT_WORKOUTS_${Date.now()}.csv`);
-            document.body.appendChild(link);
-            link.click();
-            link.remove();
-        }
+            // Theme Toggle
+            var themeBtn = document.getElementById('theme-toggle-btn');
+            if (themeBtn) {
+                themeBtn.addEventListener('click', function() {
+                    appState.theme = appState.theme === 'light' ? 'dark' : 'light';
+                    saveState();
+                    renderAll();
+                });
+            }
 
-        function importDataJSON(event) {
-            const fileReader = new FileReader();
-            fileReader.onload = function(e) {
-                try {
-                    const importedDB = JSON.parse(e.target.result);
-                    if (importedDB && importedDB.auth) {
-                        db = importedDB;
-                        saveDB();
-                        location.reload();
-                    } else {
-                        alert('Invalid backup structure.');
-                    }
-                } catch (err) {
-                    alert('Error parsing JSON backup file.');
+            // Quick Start Workout
+            var quickBtn = document.getElementById('btn-quick-workout');
+            if (quickBtn) {
+                quickBtn.addEventListener('click', function() {
+                    startWorkout('Push');
+                });
+            }
+
+            // Routine Selection
+            document.querySelectorAll('.routine-btn').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    var routineName = this.getAttribute('data-routine');
+                    startWorkout(routineName);
+                });
+            });
+
+            // Finish Workout
+            var finishBtn = document.getElementById('btn-finish-workout');
+            if (finishBtn) {
+                finishBtn.addEventListener('click', function() {
+                    appState.stats.workoutsCount = (appState.stats.workoutsCount || 0) + 1;
+                    appState.workouts.unshift({
+                        id: Date.now(),
+                        title: document.getElementById('active-routine-title').innerText,
+                        date: 'Vandaag',
+                        volume: '3,200 kg'
+                    });
+                    saveState();
+                    document.getElementById('modal-active-workout').classList.remove('active');
+                    renderAll();
+                });
+            }
+
+            // Meal Modal Events
+            var openMealBtn = document.getElementById('btn-open-meal-modal');
+            var closeMealBtn = document.getElementById('btn-close-meal-modal');
+            var saveMealBtn = document.getElementById('btn-save-meal');
+
+            if (openMealBtn) openMealBtn.onclick = function() { document.getElementById('modal-add-meal').classList.add('active'); };
+            if (closeMealBtn) closeMealBtn.onclick = function() { document.getElementById('modal-add-meal').classList.remove('active'); };
+
+            if (saveMealBtn) {
+                saveMealBtn.onclick = function() {
+                    var name = document.getElementById('meal-input-name').value || 'Maaltijd';
+                    var cal = parseInt(document.getElementById('meal-input-cal').value) || 0;
+                    var pro = parseInt(document.getElementById('meal-input-pro').value) || 0;
+                    var carb = parseInt(document.getElementById('meal-input-carb').value) || 0;
+                    var fat = parseInt(document.getElementById('meal-input-fat').value) || 0;
+
+                    appState.meals.push({ id: Date.now(), name: name, calories: cal, protein: pro, carbs: carb, fat: fat });
+                    saveState();
+                    document.getElementById('modal-add-meal').classList.remove('active');
+                    renderAll();
+                };
+            }
+
+            // Profile Save
+            var saveProfBtn = document.getElementById('btn-save-profile');
+            if (saveProfBtn) {
+                saveProfBtn.onclick = function() {
+                    appState.profile.name = document.getElementById('prof-name').value;
+                    appState.profile.age = document.getElementById('prof-age').value;
+                    appState.profile.height = document.getElementById('prof-height').value;
+                    appState.profile.weight = document.getElementById('prof-weight').value;
+                    appState.profile.goal = document.getElementById('prof-goal').value;
+                    saveState();
+                    renderAll();
+                    alert('Profiel opgeslagen!');
+                };
+            }
+
+            // Chat Input Handler
+            var sendChatBtn = document.getElementById('btn-send-chat');
+            if (sendChatBtn) {
+                sendChatBtn.onclick = handleChatSend;
+            }
+        });
+
+        function startWorkout(name) {
+            var container = document.getElementById('active-exercise-container');
+            var title = document.getElementById('active-routine-title');
+            if (title) title.innerText = name + ' Routine';
+            
+            var exercises = ROUTINES[name] || ROUTINES['Push'];
+            var html = '';
+            exercises.forEach(function(ex) {
+                html += '<div class="card">' +
+                    '<div style="font-weight:800; font-size:14px; margin-bottom:8px;">' + ex.name + '</div>';
+                for(var i=1; i<=ex.sets; i++) {
+                    html += '<div class="set-row">' +
+                        '<span style="font-size:12px; font-weight:700;">Set ' + i + '</span>' +
+                        '<div style="display:flex; gap:6px;">' +
+                            '<input type="number" class="input-field" value="' + ex.defaultWeight + '" style="width:60px; margin:0; padding:4px 6px; text-align:center;">' +
+                            '<span style="font-size:11px; align-self:center;">kg</span>' +
+                            '<input type="number" class="input-field" value="' + ex.defaultReps + '" style="width:50px; margin:0; padding:4px 6px; text-align:center;">' +
+                            '<span style="font-size:11px; align-self:center;">reps</span>' +
+                        '</div>' +
+                    '</div>';
                 }
-            };
-            fileReader.readAsText(event.target.files[0]);
+                html += '</div>';
+            });
+            if (container) container.innerHTML = html;
+            document.getElementById('modal-active-workout').classList.add('active');
         }
 
-        // Modal Helpers
-        function openModal(id) { document.getElementById(id).classList.add('active'); }
-        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+        function handleChatSend() {
+            var input = document.getElementById('chat-input');
+            if (!input || !input.value.trim()) return;
+            var text = input.value.trim();
+            appState.chatHistory.push({ sender: 'user', text: text });
+            input.value = '';
+            renderChatThread();
+
+            setTimeout(function() {
+                var reply = "Zorg voor voldoende eiwitten en progressive overload bij je oefeningen voor optimaal resultaat!";
+                if (text.toLowerCase().includes('borst')) reply = "Voor borstontwikkeling zijn de Bench Press en Incline Dumbbell Press essentieel.";
+                if (text.toLowerCase().includes('rug')) reply = "Focus bij rugoefeningen op het naar beneden trekken van je ellebogen voor maximale lat-activatie.";
+                
+                appState.chatHistory.push({ sender: 'ai', text: reply });
+                saveState();
+                renderChatThread();
+            }, 600);
+        }
     </script>
 </body>
 </html>
