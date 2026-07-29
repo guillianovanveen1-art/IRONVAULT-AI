@@ -1,35 +1,31 @@
 workflows:
   ios-workflow:
-    name: IRONVAULT AI iOS Build
+    name: IRONVAULT AI IPA Build
 
     instance_type: mac_mini
 
     environment:
       xcode: latest
 
-      vars:
-        XCODE_WORKSPACE: "ios/App/App.xcworkspace"
-        XCODE_SCHEME: "App"
-
     scripts:
-      - name: Install dependencies
+      - name: Install npm packages
         script: |
           npm install
 
-      - name: Sync Capacitor
+      - name: Update Capacitor
         script: |
           npx cap sync ios
 
-      - name: Build iOS app
+      - name: Build IPA
         script: |
-          cd ios
+          cd ios/App
           xcodebuild \
-          -workspace App/App.xcworkspace \
+          -workspace App.xcworkspace \
           -scheme App \
           -configuration Release \
-          -archivePath build/App.xcarchive \
+          -archivePath $CM_BUILD_DIR/App.xcarchive \
           archive
 
     artifacts:
-      - ios/build/*.xcarchive
-      - ios/build/**/*.ipa
+      - $CM_BUILD_DIR/*.xcarchive
+      - $CM_BUILD_DIR/**/*.ipa
