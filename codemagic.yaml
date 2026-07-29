@@ -13,9 +13,10 @@ workflows:
         script: |
           npm install
 
-      - name: Capacitor sync
+      - name: Capacitor sync & copy web assets
         script: |
           chmod -R 755 node_modules
+          npx cap copy ios
           npx cap sync ios
 
       - name: Build Archive
