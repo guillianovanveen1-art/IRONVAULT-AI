@@ -18,7 +18,7 @@ workflows:
           npm rebuild
           npx cap sync ios
 
-      - name: Check iOS files
+      - name: Check iOS project
         script: |
           ls -la ios
           ls -la ios/App
@@ -32,8 +32,17 @@ workflows:
             -scheme App \
             -configuration Release \
             -archivePath $CM_BUILD_DIR/App.xcarchive \
-            archive
+            archive \
+            CODE_SIGN_STYLE=Automatic
+
+      - name: Export IPA
+        script: |
+          xcodebuild \
+            -exportArchive \
+            -archivePath $CM_BUILD_DIR/App.xcarchive \
+            -exportOptionsPlist exportOptions.plist \
+            -exportPath $CM_BUILD_DIR
 
     artifacts:
+      - $CM_BUILD_DIR/*.ipa
       - $CM_BUILD_DIR/*.xcarchive
-      - $CM_BUILD_DIR/**/*.ipa
